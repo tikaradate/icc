@@ -13,6 +13,9 @@ int unitario(struct intervalo a){
     while(next != a.max){
         next = nextafterf(next,+1.0/0.0);
         ulps++;
+        if(ulps > 100){
+            break;
+        }
     }
     return (ulps == 1);
 }
@@ -41,13 +44,13 @@ int main(){
     }
 
     for(int i = 0; i < m+n; i++){
-        printf("X%d = [\t% 1.8e,\t % 1.8e]\n", i+1, intervalos[i].min, intervalos[i].max);
+        printf("X%d = [\t% 1.8e,\t\t % 1.8e]\n", i+1, intervalos[i].min, intervalos[i].max);
     }
 
     printf("\nNão unitários:\n");
     for(int i = m; i < m+n; i++){
         if(!unitario(intervalos[i])){
-            printf("X%d = [\t% 1.8e,\t % 1.8e]\n", i+1, intervalos[i].min, intervalos[i].max);
+            printf("X%d = [\t% 1.8e,\t\t % 1.8e]\n", i+1, intervalos[i].min, intervalos[i].max);
         }
     }
 }   
