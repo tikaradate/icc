@@ -3,7 +3,7 @@
     LFLAGS = -lm
 
       PROG = equacoesDiferenciais 
-      OBJS = edo.o edp.o utils.o diagonal.o
+      OBJS = utils.o diagonal.o
 
 .PHONY: limpa faxina clean purge all
 

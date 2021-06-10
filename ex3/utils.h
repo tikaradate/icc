@@ -18,4 +18,16 @@
 
 double timestamp(void);
 
+double quadratico(double x);
+
+double nulo();
+
+double idem();
+
+double oposto();
+
+double senoQuadrado(double x, double y);
+
+double cosDiff(double x, double y);
+
 #endif // __UTILS_H__

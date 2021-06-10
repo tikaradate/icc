@@ -1,5 +1,6 @@
 #ifndef __DIAGONAL__
 #define __DIAGONAL__
+
 struct tridiagonal
 {
     int n;                    // ordem do SL
@@ -12,11 +13,41 @@ struct pentadiagonal
     double *di2, *di, *d, *ds, *ds2, *b; // as diagonais e os termos independentes
 };
 
+// EDO de segunda ordem
+// y'' + y'p + yq = r
+struct EDO
+{
+    int n;
+    double a, b;
+    double ya, yb;
+    double (*p)(double), (*q)(double), (*r)(double);
+};
+
+// EDP de formato c*Uxx + d*Uyy + e*U = r
+struct EDP
+{
+    int n, m;
+    double ax, bx, ay, by;
+    // valores dos extremos
+    double yax, ybx, yay, yby;
+    // funções das variáveis independentes
+    double (*c)(double, double), (*d)(double, double), 
+           (*e)(double, double), (*r)(double, double);
+};
+
+void gaussSeidelEDO(struct EDO *edo, double *y, struct tridiagonal *td);
+
 struct tridiagonal *geraTridiagonal(struct EDO *edo);
 
 void imprimeTridiagonal(struct tridiagonal *td);
 
+double *residuoTri(struct tridiagonal *td, double *y);
+
+void gaussSeidelEDP(struct EDP *edp, double **y);
+
 struct pentadiagonal *geraPentadiagonal(struct EDP *edp);
+
+double *residuoPenta(struct pentadiagonal *pd, double **y);
 
 void imprimePentadiagonal(struct pentadiagonal *pd);
 #endif
