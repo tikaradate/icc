@@ -35,7 +35,7 @@ struct EDP
            (*e)(double, double), (*r)(double, double);
 };
 
-void gaussSeidelEDO(struct EDO *edo, double *y, struct tridiagonal *td);
+void gaussSeidelEDO(struct tridiagonal *td, double *y, int n);
 
 struct tridiagonal *geraTridiagonal(struct EDO *edo);
 
@@ -43,7 +43,7 @@ void imprimeTridiagonal(struct tridiagonal *td);
 
 double *residuoTri(struct tridiagonal *td, double *y);
 
-void gaussSeidelEDP(struct EDP *edp, double **y);
+void gaussSeidelEDP(struct pentadiagonal *td, double **y, int n, int m);
 
 struct pentadiagonal *geraPentadiagonal(struct EDP *edp);
 

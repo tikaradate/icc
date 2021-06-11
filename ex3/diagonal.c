@@ -3,49 +3,6 @@
 #include "diagonal.h"
 #include "utils.h"
 
-void gaussSeidelEDO(struct EDO *edo, double *y, struct tridiagonal *td)
-{
-    int n = edo->n, it = 0;
-    double h, xi, bi, yi, d, di, ds, soma;
-
-    h = (edo->b - edo->a) / (n + 1);
-    while (it++ < MAXIT)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            soma = 0;
-            xi = edo->a + (i + 1) * h;
-            // bi = h * h * edo->r(xi);
-            
-            // di = 1 - (h * edo->p(xi) / 2.0);
-            // d = -2 + h * h * edo->q(xi);
-            // ds = 1 + (h * edo->p(xi)/ 2.0);
-            
-            // limitante inferior
-            // if (i == 0)
-            //     di *= edo->ya;
-            // else
-            //     di *= y[i - 1];
-
-            // limitante superior
-            // if (i == n-1)
-            //     ds *= edo->yb;
-            // else
-            //     ds *= y[i + 1];
-                
-            if(i == 0)
-                soma += td->ds[i]*y[i+1];
-            else if(i == n-1)
-                soma += td->di[i]*y[i-1];
-            else
-                soma += td->di[i]*y[i-1] + td->ds[i]*y[i+1];
-
-            y[i] = (td->b[i] - soma) / td->d[i];
-        }
-    }
-}
-
-
 struct tridiagonal *geraTridiagonal(struct EDO *edo)
 {
     struct tridiagonal *td;
@@ -60,11 +17,12 @@ struct tridiagonal *geraTridiagonal(struct EDO *edo)
     td->n = n;
 
     h = (edo->b - edo->a) / (n + 1);
+
     for (int i = 0; i < n; i++)
     {
         xi = edo->a + (i + 1) * h;
         td->b[i] = h * h * edo->r(xi);
-        td->di[i] = 1 - h * edo->p(xi) / 2.0;
+        td->di[i] = 1 - (h * edo->p(xi) / 2.0);
         td->d[i] = -2 + h * h * edo->q(xi);
         td->ds[i] = 1 + h * edo->p(xi) / 2.0;
         if(i == 0)
@@ -73,6 +31,27 @@ struct tridiagonal *geraTridiagonal(struct EDO *edo)
             td->b[i] -= edo->yb*td->ds[i];
     }
     return td;
+}
+
+void gaussSeidelEDO(struct tridiagonal *td, double *y, int n)
+{
+    int it = 0;
+    double soma;
+
+    while (it++ < MAXIT)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            soma = 0;
+            if(i != 0)
+                soma += td->di[i]*y[i-1];
+            if(i != n-1)
+                soma += td->ds[i]*y[i+1];
+
+            y[i] = (td->b[i] - soma) / td->d[i];
+            
+        }
+    }
 }
 
 double *residuoTri(struct tridiagonal *td, double *y)
@@ -115,64 +94,6 @@ void imprimeTridiagonal(struct tridiagonal *td)
     }
 }
 
-void gaussSeidelEDP(struct EDP *edp, double **y)
-{
-    int n = edp->n, m = edp->m, it = 0;
-    double hx, hx2, hy, hy2, xi, yi, di2, di, d, ds, ds2, bi;
-
-    hx = (edp->bx - edp->ax) / (n + 1);
-    hx2 = hx*hx;
-    hy = (edp->by - edp->ay) / (m + 1);
-    hy2 = hy*hy;
-    while (it++ < MAXIT)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < m; j++)
-            {
-                xi = edp->ax + (i + 1) * hx;
-                yi = edp->ay + (j + 1) * hy;
-                bi = hx2*hy2 * edp->r(xi, yi);
-
-                di2 = hx2*edp->d(xi, yi);
-                di  = hy2*edp->c(xi, yi);
-                d = (-2*(hx2*edp->d(xi, yi) + hy2*edp->c(xi, yi)) + hx2*hy2*edp->e(xi, yi));
-                ds = hy2*edp->c(xi, yi);
-                ds2 = hx2*edp->d(xi, yi);
-                
-                // checa parte inferior
-                if(j == 0){
-                    di2 *= edp->yay;
-                } else {
-                    di2 *= y[i][j-1];
-                }
-                // checa borda esquerda
-                if(i == 0){
-                    di *= edp->yax;
-                } else {
-                    di *= y[i-1][j];
-                }
-                // checa borda direita
-                if(i == n-1){
-                    ds *= edp->ybx;
-                } else {
-                    ds *= y[i+1][j];
-                }
-                // checa parte superior
-                if(j == m-1){
-                    ds2 *= edp->yby;
-                } else {
-                    ds2 *= y[i][j+1];
-                }
-
-                bi -= (di2 + di + ds + ds2);
-                y[i][j] = bi / d;
-            }
-        }
-    }
-}
-
-
 struct pentadiagonal *geraPentadiagonal(struct EDP *edp)
 {
     struct pentadiagonal *pd;
@@ -193,7 +114,6 @@ struct pentadiagonal *geraPentadiagonal(struct EDP *edp)
     hx2 = hx * hx;
     hy = (edp->by - edp->ay) / (m + 1);
     hy2 = hy * hy;
-    printf("\n\n%f %f\n\n", hx, hy);
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
@@ -205,22 +125,57 @@ struct pentadiagonal *geraPentadiagonal(struct EDP *edp)
 
             pd->di2[index] = hx2 * edp->d(xi, yi);
             pd->di[index] = hy2 * edp->c(xi, yi);
-            pd->d[index] = (-2.0 * (hx2 * edp->d(xi, yi) + hy2 * edp->c(xi, yi))) + ((edp->e(xi, yi)));
+            pd->d[index] = (-2.0 * (hx2 * edp->d(xi, yi) + hy2 * edp->c(xi, yi))) + ((hx2*hy2*edp->e(xi, yi)));
             pd->ds[index] = hy2 * edp->c(xi, yi);
             pd->ds2[index] = hx2 * edp->d(xi, yi);
 
-            if(i == 0)
-                pd->b[index] -= edp->yax;
             if(j == 0)
-                pd->b[index] -= edp->yay;
+                pd->b[index] -= edp->yay*pd->di2[index];
+            if(i == 0)
+                pd->b[index] -= edp->yax*pd->di[index];
             if(i == n-1)
-                pd->b[index] -= edp->ybx;
+                pd->b[index] -= edp->ybx*pd->ds[index];
             if(j == m-1)
-                pd->b[index] -= edp->yby;
+                pd->b[index] -= edp->yby*pd->ds2[index];
         }
     }
     return pd;
 }
+
+void gaussSeidelEDP(struct pentadiagonal *pd, double **y, int n, int m)
+{
+    int it = 0, index;
+    double soma;
+
+    
+    while (it++ < MAXIT)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                soma = 0;
+                index = (i*m + j);   
+                // checa parte inferior
+                if(j != 0)
+                    soma += pd->di2[index]*y[i][j-1];
+                // checa borda esquerda
+                if(i != 0)
+                    soma += pd->di[index]*y[i-1][j];
+                // checa borda direita
+                if(i != n-1)
+                    soma += pd->ds[index]*y[i+1][j];
+                // checa parte superior
+                if(j != m-1)
+                    soma += pd->ds2[index]*y[i][j+1];
+                
+
+                y[i][j] = (pd->b[i] - soma) / pd->d[i];
+            }
+        }
+    }
+}
+
 
 double *residuoPenta(struct pentadiagonal *pd, double **y)
 {

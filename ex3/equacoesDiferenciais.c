@@ -8,8 +8,6 @@
 #define L 6
 #define W 8
 
-
-
 double normaL2Residuo(int n, double *res)
 {
 	double norma = 0;
@@ -49,7 +47,7 @@ int main()
     edo.r = (&quadratico);
     td = geraTridiagonal(&edo);
     imprimeTridiagonal(td);
-    gaussSeidelEDO(&edo, yEDO, td);
+    gaussSeidelEDO(td, yEDO, n);
     printf("Y = ");
     for(int i = 0; i < n; i++){
         printf("%f ", yEDO[i]);
@@ -80,7 +78,7 @@ int main()
     edp.r = (&senoQuadrado);
     pd = geraPentadiagonal(&edp);
     imprimePentadiagonal(pd);
-    gaussSeidelEDP(&edp, yEDP);
+    gaussSeidelEDP(pd, yEDP, n, m);
     for(int i = 0; i < n; i++){
         for(int j = 0; j < m; j++){
             printf("%+f ", yEDP[i][j]);
@@ -103,7 +101,7 @@ int main()
     edo.r = (&nulo);
     td = geraTridiagonal(&edo);
     imprimeTridiagonal(td);
-    gaussSeidelEDO(&edo, yEDO, td);
+    gaussSeidelEDO(td, yEDO, n);
     for(int i = 0; i < n; i++){
         printf("%f ", yEDO[i]);
     }
