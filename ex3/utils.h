@@ -26,7 +26,21 @@ double idem();
 
 double oposto();
 
+double const20();
+
+double const45();
+
+double const100();
+
 double senoQuadrado(double x, double y);
+
+double negCosx(double x, double y);
+
+double negCosy(double x, double y);
+
+double cosx(double x, double y);
+
+double cosy(double x, double y);
 
 double cosDiff(double x, double y);
 

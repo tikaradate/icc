@@ -41,6 +41,40 @@ double oposto()
 {
     return -1.0;
 }
+
+double const20(){
+    return 20.0;
+}
+
+double const45(){
+    return 45.0;
+}
+
+double const100(){
+    return 100.0;
+}
+
+double negCosx(double x, double y)
+{
+    return(-cos(y));
+}
+
+double negCosy(double x, double y)
+{
+    return(-cos(y));
+}
+
+double cosx(double x, double y)
+{  
+    return(cos(x));
+}
+
+double cosy(double x, double y)
+{  
+    return(cos(y));
+}
+
+
 // problema B
 double senoQuadrado(double x, double y)
 {

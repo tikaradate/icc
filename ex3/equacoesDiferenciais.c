@@ -5,8 +5,10 @@
 #include "diagonal.h"
 #include "utils.h"
 
-#define L 6
-#define W 8
+#define L    6
+#define W    8
+#define PI   3.14159265358979323846
+#define PI_2 1.57079632679489661923
 
 double normaL2Residuo(int n, double *res)
 {
@@ -40,8 +42,8 @@ int main()
     edo.n = n;
     edo.a = 0;
     edo.b = 12;
-    edo.ya = 0;
-    edo.yb = 0;
+    edo.ya = (&nulo);
+    edo.yb = (&nulo);
     edo.p = (&nulo);
     edo.q = (&nulo);
     edo.r = (&quadratico);
@@ -68,10 +70,10 @@ int main()
     edp.bx = L;
     edp.ay = 0;
     edp.by = W;
-    edp.yax = 20;
-    edp.ybx = 45;
-    edp.yay = 0;
-    edp.yby = 100;
+    edp.yax = (&const20);
+    edp.ybx = (&const45);
+    edp.yay = (&nulo);
+    edp.yby = (&const100);
     edp.c = (&idem);
     edp.d = (&idem);
     edp.e = (&oposto);
@@ -94,8 +96,8 @@ int main()
     printf("---- problema c ----\n");
     edo.a = 0;
     edo.b = 1;
-    edo.ya = 0;
-    edo.yb = 1;
+    edo.ya = (&nulo);
+    edo.yb = (&idem);
     edo.p = (&nulo);
     edo.q = (&idem);
     edo.r = (&nulo);
@@ -114,20 +116,32 @@ int main()
 
     // problema D $ u_{xx} + u_{yy} = -cos(x-y), (x,y) \in (0,\pi) \crossproduct (0,\frac{\pi,2})
     //                                            , u(0,y) = cos(y), u(\pi,y) = -cos(y), u(x,0) = cos(x), u(x,\frac{\pi,2}) = 0$
-    // edp.n = n;
-    // edp.m = m;
-    // edp.ax = 0;
-    // edp.bx = M_PI;
-    // edp.ay = 0;
-    // edp.by = M_PI_2;
-    // edp.yax = 0;
-    // edp.ybx = 100;
-    // edp.yay = cos;
-    // edp.yby = 0;
-    // edp.c = (&idem);
-    // edp.d = (&idem);
-    // edp.e = (&nulo);
-    // edp.r = (&cosDiff);
-    // gaussSeidelEDP(&edp);
-    // free(y);
+    printf("---- problema d ----\n");
+    edp.n = n;
+    edp.m = m;
+    edp.ax = 0;
+    edp.bx = PI;
+    edp.ay = 0;
+    edp.by = PI_2;
+    edp.yax = (&cosy);
+    edp.ybx = (&negCosy);
+    edp.yay = (&cosx);
+    edp.yby = (&nulo);
+    edp.c = (&idem);
+    edp.d = (&idem);
+    edp.e = (&nulo);
+    edp.r = (&cosDiff);
+    pd = geraPentadiagonal(&edp);
+    imprimePentadiagonal(pd);
+    gaussSeidelEDP(pd, yEDP, n, m);
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){
+            printf("%+f ", yEDP[i][j]);
+        }
+    }
+    printf("\n");
+    r = residuoPenta(pd, yEDP);
+    norma = normaL2Residuo(n*m, r);
+    printf("norma L2 = %f\n", norma);
+    printf("\n");
 }

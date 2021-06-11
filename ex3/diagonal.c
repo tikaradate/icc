@@ -26,9 +26,9 @@ struct tridiagonal *geraTridiagonal(struct EDO *edo)
         td->d[i] = -2 + h * h * edo->q(xi);
         td->ds[i] = 1 + h * edo->p(xi) / 2.0;
         if(i == 0)
-            td->b[i] -= edo->ya*td->di[i];
+            td->b[i] -= edo->ya(xi)*td->di[i];
         if(i == n-1)
-            td->b[i] -= edo->yb*td->ds[i];
+            td->b[i] -= edo->yb(xi)*td->ds[i];
     }
     return td;
 }
@@ -130,13 +130,13 @@ struct pentadiagonal *geraPentadiagonal(struct EDP *edp)
             pd->ds2[index] = hx2 * edp->d(xi, yi);
 
             if(j == 0)
-                pd->b[index] -= edp->yay*pd->di2[index];
+                pd->b[index] -= edp->yay(xi,yi)*pd->di2[index];
             if(i == 0)
-                pd->b[index] -= edp->yax*pd->di[index];
+                pd->b[index] -= edp->yax(xi,yi)*pd->di[index];
             if(i == n-1)
-                pd->b[index] -= edp->ybx*pd->ds[index];
+                pd->b[index] -= edp->ybx(xi,yi)*pd->ds[index];
             if(j == m-1)
-                pd->b[index] -= edp->yby*pd->ds2[index];
+                pd->b[index] -= edp->yby(xi,yi)*pd->ds2[index];
         }
     }
     return pd;
