@@ -91,11 +91,13 @@ int main()
     norma = normaL2Residuo(n*m, r);
     printf("norma L2 = %f\n", norma);
     printf("\n");
+    free(r);
 
     // problema C $ y^{ii} + y = 0, x \in (0,1), y(0) = 0 e y(1) = 1 $
     printf("---- problema c ----\n");
-    edo.a = 0;
-    edo.b = 1;
+    edo.n = n;
+    edo.a = 0.0;
+    edo.b = 1.0;
     edo.ya = (&nulo);
     edo.yb = (&idem);
     edo.p = (&nulo);
@@ -103,14 +105,18 @@ int main()
     edo.r = (&nulo);
     td = geraTridiagonal(&edo);
     imprimeTridiagonal(td);
+    for(int i = 0; i < n; i++){
+        yEDO[i] = 0.0;
+    }
     gaussSeidelEDO(td, yEDO, n);
+    printf("Y = ");
     for(int i = 0; i < n; i++){
         printf("%f ", yEDO[i]);
     }
     printf("\n");
     r = residuoTri(td, yEDO);
     norma = normaL2Residuo(n, r);
-    printf("%f\n", norma);
+    printf("norma L2 = %f\n", norma);
     free(td);
 
 

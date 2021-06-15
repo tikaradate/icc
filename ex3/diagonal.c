@@ -33,6 +33,7 @@ struct tridiagonal *geraTridiagonal(struct EDO *edo)
     return td;
 }
 
+
 void gaussSeidelEDO(struct tridiagonal *td, double *y, int n)
 {
     int it = 0;
@@ -53,6 +54,7 @@ void gaussSeidelEDO(struct tridiagonal *td, double *y, int n)
         }
     }
 }
+
 
 double *residuoTri(struct tridiagonal *td, double *y)
 {
@@ -80,17 +82,17 @@ void imprimeTridiagonal(struct tridiagonal *td)
     {
         if (i == 0)
         {
-            printf("%9c %+f %+f =", ' ', td->d[i], td->ds[i]);
+            printf("%9c %+f %+f ", ' ', td->d[i], td->ds[i]);
         }
         else if (i == td->n - 1)
         {
-            printf("%+f %+f %9c =", td->di[i], td->d[i], ' ');
+            printf("%+f %+f %9c ", td->di[i], td->d[i], ' ');
         }
         else
         {
-            printf("%+f %+f %+f =", td->di[i], td->d[i], td->ds[i]);
+            printf("%+f %+f %+f ", td->di[i], td->d[i], td->ds[i]);
         }
-        printf(" %+f\n", td->b[i]);
+        printf("= %+f\n", td->b[i]);
     }
 }
 
@@ -125,7 +127,7 @@ struct pentadiagonal *geraPentadiagonal(struct EDP *edp)
 
             pd->di2[index] = hx2 * edp->d(xi, yi);
             pd->di[index] = hy2 * edp->c(xi, yi);
-            pd->d[index] = (-2.0 * (hx2 * edp->d(xi, yi) + hy2 * edp->c(xi, yi))) + ((hx2*hy2*edp->e(xi, yi)));
+            pd->d[index] = (-2.0 * ((hx2 * edp->d(xi, yi)) + (hy2 * edp->c(xi, yi)))) + ((hx2*hy2*edp->e(xi, yi)));
             pd->ds[index] = hy2 * edp->c(xi, yi);
             pd->ds2[index] = hx2 * edp->d(xi, yi);
 
@@ -182,7 +184,7 @@ double *residuoPenta(struct pentadiagonal *pd, double **y)
     double *r;
     int n = pd->n, m = pd->m, index;
 
-    r = calloc(n, sizeof(double) * n * m);
+    r = calloc(n*m, sizeof(double) * n * m);
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
@@ -190,13 +192,13 @@ double *residuoPenta(struct pentadiagonal *pd, double **y)
             index = i * m + j;
             
             r[index] += (pd->d[index] * y[i][j]);
-            if(i != 0)
-                r[index] += (pd->di[index] * y[i-1][j]);
             if(j != 0)
                 r[index] += (pd->di2[index] * y[i][j-1]);
-            if(i != n-1)
+            if(i != 0)
+                r[index] += (pd->di[index] * y[i-1][j]);
+            if(i != n - 1)
                 r[index] += (pd->ds[index] * y[i+1][j]);
-            if(j != m-1)
+            if(j != m - 1)
                 r[index] += (pd->ds2[index] * y[i][j+1]);
 
             r[index] = pd->b[index] - r[index];
@@ -207,41 +209,38 @@ double *residuoPenta(struct pentadiagonal *pd, double **y)
 
 void imprimePentadiagonal(struct pentadiagonal *pd)
 {
-    int index;
-    for (int i = 0; i < pd->n; i++)
+    int index, n = pd->n, m = pd->m;
+    for (int i = 0; i < n; i++)
     {
-        for (int j = 0; j < pd->m; j++)
+        for (int j = 0; j < m; j++)
         {
-            index = i * pd->m + j;
-            if (i == 0 && j == 0)
-            {
-                printf("%9c %9c %+f %+f %+f =", ' ', ' ', pd->d[index], pd->ds[index], pd->ds2[index]);
+            index = i * m + j;
+
+            if(j != 0){
+                printf("%+f ", pd->di2[index]);
+            } else {
+                printf("%9c ", ' ');
             }
-            else if (i == 0)
-            {
-                printf("%+f %9c %+f %+f %+f =", pd->di2[index], ' ', pd->d[index], pd->ds[index], pd->ds2[index]);
+            if(i != 0){
+                printf("%+f ", pd->di[index]);
+            } else {
+                printf("%9c ", ' ');
             }
-            else if (j == 0)
-            {
-                printf("%9c %+f %+f %+f %+f =", ' ', pd->di[index], pd->d[index], pd->ds[index], pd->ds2[index]);
+            
+            printf("%+f ", pd->d[index]);
+            
+            if(i != n-1){
+                printf("%+f ", pd->ds[index]);
+            } else {
+                printf("%9c ", ' ');
             }
-            else if (i == pd->n - 1 && j == pd->m - 1)
-            {
-                printf("%+f %+f %+f %9c %9c =", pd->di2[index], pd->di[index], pd->d[index], ' ', ' ');
+            if(j != m-1){
+                printf("%+f ", pd->ds2[index]);
+            } else {
+                printf("%9c ", ' ');
             }
-            else if (i == pd->n - 1)
-            {
-                printf("%+f %+f %+f %9c %+f =", pd->di2[index], pd->di[index], pd->d[index], ' ', pd->ds2[index]);
-            }
-            else if (j == pd->m - 1)
-            {
-                printf("%+f %+f %+f %+f %9c =", pd->di2[index], pd->di[index], pd->d[index], pd->ds[index], ' ');
-            }
-            else
-            {
-                printf("%+f %+f %+f %+f %+f =", pd->di2[index], pd->di[index], pd->d[index], pd->ds[index], pd->ds2[index]);
-            }
-            printf(" %+f\n", pd->b[index]);
+            
+            printf(" = %+f\n", pd->b[index]);
         }
     }
 }

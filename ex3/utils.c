@@ -74,7 +74,6 @@ double cosy(double x, double y)
     return(cos(y));
 }
 
-
 // problema B
 double senoQuadrado(double x, double y)
 {
