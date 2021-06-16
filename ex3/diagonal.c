@@ -127,7 +127,7 @@ struct pentadiagonal *geraPentadiagonal(struct EDP *edp)
 
             pd->di2[index] = hx2 * edp->d(xi, yi);
             pd->di[index] = hy2 * edp->c(xi, yi);
-            pd->d[index] = (-2.0 * ((hx2 * edp->d(xi, yi)) + (hy2 * edp->c(xi, yi)))) + ((hx2*hy2*edp->e(xi, yi)));
+            pd->d[index] = -2.0 * ((hx2 * edp->d(xi, yi)) + (hy2 * edp->c(xi, yi))) + (hx2*hy2*edp->e(xi, yi));
             pd->ds[index] = hy2 * edp->c(xi, yi);
             pd->ds2[index] = hx2 * edp->d(xi, yi);
 
@@ -172,7 +172,7 @@ void gaussSeidelEDP(struct pentadiagonal *pd, double **y, int n, int m)
                     soma += pd->ds2[index]*y[i][j+1];
                 
 
-                y[i][j] = (pd->b[i] - soma) / pd->d[i];
+                y[i][j] = (pd->b[index] - soma) / pd->d[index];
             }
         }
     }

@@ -28,8 +28,9 @@ int main()
     struct pentadiagonal *pd;
     int n, m;
     double *yEDO, **yEDP, *r, norma;
-    scanf("%d %d", &n, &m);
 
+    scanf("%d %d", &n, &m);
+    
     yEDO = calloc(n, sizeof(double) *n);
     yEDP = malloc(sizeof(double*)*n);
     for(int i = 0; i < n; i++){
@@ -57,7 +58,7 @@ int main()
     printf("\n");
     r = residuoTri(td, yEDO);
     norma = normaL2Residuo(n, r);
-    printf("norma L2 = %f\n", norma);
+    printf("norma L2 = %.6e\n", norma);
     free(td);
     free(r);
 
@@ -89,7 +90,7 @@ int main()
     printf("\n");
     r = residuoPenta(pd, yEDP);
     norma = normaL2Residuo(n*m, r);
-    printf("norma L2 = %f\n", norma);
+    printf("norma L2 = %.6e\n", norma);
     printf("\n");
     free(r);
 
@@ -116,7 +117,7 @@ int main()
     printf("\n");
     r = residuoTri(td, yEDO);
     norma = normaL2Residuo(n, r);
-    printf("norma L2 = %f\n", norma);
+    printf("norma L2 = %.6e\n", norma);
     free(td);
 
 
@@ -148,6 +149,6 @@ int main()
     printf("\n");
     r = residuoPenta(pd, yEDP);
     norma = normaL2Residuo(n*m, r);
-    printf("norma L2 = %f\n", norma);
+    printf("norma L2 = %.6e\n", norma);
     printf("\n");
 }
