@@ -18,13 +18,18 @@
 
 double timestamp(void);
 
+void zeraVetor(double *y, int n);
+
+void zeraMatriz(double **y, int n, int m);
+
+// funções e constantes usadas nas equações
 double quadratico(double x);
 
-double nulo();
+double const0();
 
-double idem();
+double const1();
 
-double oposto();
+double constNeg1();
 
 double const20();
 

@@ -20,67 +20,84 @@ double timestamp(void)
     return ((double)(tp.tv_sec * 1000.0 + tp.tv_usec / 1000.0));
 }
 
-// problema A
+void zeraVetor(double *y, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        y[i] = 0.0;
+    }
+}
+
+void zeraMatriz(double **y, int n, int m)
+{
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            y[i][j] = 0.0;
+}
+
+// problema a b c d
+double const0()
+{
+    return 0.0;
+}
+// problema a b c d
+double const1()
+{
+    return 1.0;
+}
+// problema b
+double constNeg1()
+{
+    return -1.0;
+}
+// problema b
+double const20()
+{
+    return 20.0;
+}
+// problema b
+double const45()
+{
+    return 45.0;
+}
+// problema b
+double const100()
+{
+    return 100.0;
+}
+// problema d
+double negCosx(double x, double y)
+{
+    return (-cos(y));
+}
+// problema d
+double negCosy(double x, double y)
+{
+    return (-cos(y));
+}
+// problema d
+double cosx(double x, double y)
+{
+    return (cos(x));
+}
+// problema d
+double cosy(double x, double y)
+{
+    return (cos(y));
+}
+
+// problema a
 double quadratico(double x)
 {
     return (6.0 * x - ((x * x) / 2.0));
 }
-// problema A, B, C, D
-double nulo()
-{
-    return 0.0;
-}
-
-// problema A, B, C, D
-double idem()
-{
-    return 1.0;
-}
-// problema B
-double oposto()
-{
-    return -1.0;
-}
-
-double const20(){
-    return 20.0;
-}
-
-double const45(){
-    return 45.0;
-}
-
-double const100(){
-    return 100.0;
-}
-
-double negCosx(double x, double y)
-{
-    return(-cos(y));
-}
-
-double negCosy(double x, double y)
-{
-    return(-cos(y));
-}
-
-double cosx(double x, double y)
-{  
-    return(cos(x));
-}
-
-double cosy(double x, double y)
-{  
-    return(cos(y));
-}
-
-// problema B
+// problema b
 double senoQuadrado(double x, double y)
 {
     return (sin(x) * sin(x));
 }
-// problema D
+// problema d
 double cosDiff(double x, double y)
 {
-    return (-cos(x+y)-cos(x-y));
+    return (-cos(x + y) - cos(x - y));
 }

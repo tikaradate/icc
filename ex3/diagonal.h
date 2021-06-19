@@ -3,13 +3,13 @@
 
 struct tridiagonal
 {
-    int n;                    // ordem do SL
-    double *di, *d, *ds, *b;  // as diagonais e os termos independentes
+    int n;                   // ordem do SL
+    double *di, *d, *ds, *b; // as diagonais e os termos independentes
 };
 
 struct pentadiagonal
 {
-    int n, m;                               // ordem do SL
+    int n, m;                            // ordem do SL
     double *di2, *di, *d, *ds, *ds2, *b; // as diagonais e os termos independentes
 };
 
@@ -29,11 +29,11 @@ struct EDP
     int n, m;
     double ax, bx, ay, by;
     // valores dos extremos
-    double (*yax)(double, double), (*ybx)(double, double), 
-           (*yay)(double, double), (*yby)(double, double);
+    double (*yax)(double, double), (*ybx)(double, double),
+        (*yay)(double, double), (*yby)(double, double);
     // funções das variáveis independentes
-    double (*c)(double, double), (*d)(double, double), 
-           (*e)(double, double), (*r)(double, double);
+    double (*c)(double, double), (*d)(double, double),
+        (*e)(double, double), (*r)(double, double);
 };
 
 void gaussSeidelEDO(struct tridiagonal *td, double *y, int n);
@@ -51,4 +51,10 @@ struct pentadiagonal *geraPentadiagonal(struct EDP *edp);
 double *residuoPenta(struct pentadiagonal *pd, double **y);
 
 void imprimePentadiagonal(struct pentadiagonal *pd);
+
+double normaL2Residuo(int n, double *res);
+
+void imprimeSolucaoEDO(double *y, int n);
+
+void imprimeSolucaoEDP(double **y, int n, int m);
 #endif
